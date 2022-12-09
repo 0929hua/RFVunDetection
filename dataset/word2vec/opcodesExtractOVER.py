@@ -172,9 +172,6 @@ def addData(x):
     return listADD
 import time
 if __name__ == "__main__":
-    begin_time = time.time()
-    print(begin_time)
-    print('可重入漏洞：')
     conOpCodesPath = 'D:/pyProjects/pythonProject/mlVunDet/overfl/'
     conOpCodesPathList = get_filelist(dir, conOpCodesPath, "txt")
     print(conOpCodesPathList)
