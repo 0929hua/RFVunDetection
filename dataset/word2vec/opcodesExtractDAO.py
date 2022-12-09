@@ -50,114 +50,6 @@ def operateCodeList(data):
             continue
         operateCodeList.append(i)
     return operateCodeList
-#blockList  区块节点
-#preSucList   区块节点的后继节点列表
-def blockListAndpreSucListS(data):
-    blockListAndpreSucList=[]
-    blockList = []  # 区块节点
-    preSucList = []  # 区块节点的后继节点列表
-    succList=[]# 区块节点的前驱节点列表
-    for i in data:
-        if i.startswith('Block'):
-            m = i.lstrip().strip('\n')
-            blockList.append(m)
-        if i.startswith('Successors'):  # i.startswith('Predecessors') or
-            preSucList.append(i)
-        if i.startswith('Predecessors'):  # i.startswith('Predecessors') or
-            succList.append(i)
-        blockListS = []
-    #print(blockList)
-    blockListS = []
-    for i in blockList:
-        blockListS.append(i.split()[1])  # 以空格为分隔符，包含 \n
-    preSucListS = []
-    for i in preSucList:
-        list = i.split(':')[1]  # 以空格为分隔符，包含 \n
-        preSucListS.append(list)
-    succListS=[]
-    for i in succList:
-        list = i.split(':')[1]  # 以空格为分隔符，包含 \n
-        succListS.append(list)
-    blockListAndpreSucList.append(blockListS)
-    blockListAndpreSucList.append(preSucListS)
-    blockListAndpreSucList.append(succListS)
-    return blockListAndpreSucList
-def Successors(blockNumAndSuccessors):
-    nodeAll = []
-    for i in blockNumAndSuccessors:
-        str = i[1]
-        if (str == ' '):
-            node = []
-            nodeAll.append(node)
-        else:
-            r = (str.replace('[', '').replace(']', '')).split(',')
-            node = []
-            for j in r:
-                m = j.lstrip().strip('\n')  # 去除首尾空白字符
-                node.append(m)
-            nodeAll.append(node)
-    return nodeAll
-# 区块号以及区块节点的后继节点列表
-#blockList  区块节点
-#preSucList   区块节点的后继节点列表
-def  blockNumAndSuccessors(blockListS,preSucListS):
-    blockNumAndSuccessors = []  # 区块号以及区块节点的后继节点列表
-    m = 0
-    for i in blockListS:
-        nodeList = []
-        nodeList.append(i)
-        n = 0
-        for j in preSucListS:
-            if m == n:
-                nodeList.append(j)
-            n = n + 1
-        m = m + 1
-        blockNumAndSuccessors.append(nodeList)
-    return blockNumAndSuccessors
-###将节点以及其后继节点的操作码指令
-def blockOperS(numCodeDictS,codeOperDict,blockListS):
-    newDict={}
-    Mnodes=[]
-    for key ,value in numCodeDictS.items():
-        #print(key, ":", value)
-        Mnode = []
-        for i in value:
-            for key1, value1 in codeOperDict.items():
-                if i.__eq__(key1):
-                    Mnode.append(value1)
-                    Mnodes.append(Mnode)
-    #print(Mnodes)
-    res = []
-    for i in Mnodes:
-        if i not in res:
-            res.append(i)
-    newDict = {}  # 将节点以及其后继节点的操作码指令  转换为 字典格式
-    for i, j in zip(blockListS, res):  # 同时循环两个列表
-        newDict[i] = j  # 此时i为键，j为值，即{i：j}
-
-    return newDict
-def getFileName(dir,path,format):
-    Filelist = [];
-    for home, dir, files, in os.walk(path):
-        # 遍历对应的文件下的所有文件
-        for filename in files:
-            if filename.endswith(format):
-                Filelist.append(filename.strip(format))
-    return Filelist
-###提取控制流图所有执行路径
-#fileExtractPath=''
-#@tail_call_optimized
-def add(key,dict,newKey):
-    global fileExtractPath
-    newKey=newKey+'->'+key;
-    if not key=='':
-        list = dict[key]
-        if len(list)==1 & list[0].__eq__(''):
-                 fileExtractPath.write(newKey+'\n')
-                 print(newKey)
-                 return 'true'
-        for i in list:
-            add(i, dict, newKey)
 def dealdata(dataADD):
     textF = open("word2vecNew.txt", "w")
     textF.truncate()
@@ -264,7 +156,6 @@ def addData(x):
             else:
                 i = i.strip("\n")
                 newlist.append(i)
-        # print(newlist)
         m = 0
         for j in newlist:
             m = m + float(j)
@@ -281,17 +172,6 @@ if __name__ == "__main__":
                 data = read_out_file(file)  # 读取文件
                 name=file.strip(conOpCodesPath)
                 x=name.strip('.tx')
-                blockListAndpreSucList = blockListAndpreSucListS(data)
-                blockListS = blockListAndpreSucList[0]  # 区块节点
-                preSucListS = blockListAndpreSucList[1]  # 区块节点的后继节点列表
-                succListS = blockListAndpreSucList[2]  # 区块节点的前继节点列表
-                blockNumAndSuccessor = blockNumAndSuccessors(blockListS, preSucListS)  # 区块号以及区块节点的后继节点列表
-                blockNumAndprecessor = blockNumAndSuccessors(blockListS, succListS)  # 区块号以及区块节点的前继节点列表
-                Successor = Successors(blockNumAndSuccessor)  # 后继节点
-
-                numCodeDictS = {}  # 将节点以及其后继节点  转换为 字典格式
-                for i, j in zip(blockListS, Successor):  # 同时循环两个列表
-                    numCodeDictS[i] = j  # 此时i为键，j为值，即{i：j}
                 opFe = []
                 operateCodeListS = operateCodeList(data)  # 提取操作码指令
                 for list in operateCodeListS:
@@ -308,8 +188,6 @@ if __name__ == "__main__":
                             for i in m:
                                 code = i.split(' ')[1]
                                 listLast.append(code)
-                    print(listLast)
-                    print(len(listLast))
                     if len(listLast):
                         test_senTIME = []
                         test_senTIME.append(listLast)
@@ -336,92 +214,3 @@ if __name__ == "__main__":
     textl = open("./dao/labelListDAO.txt", "a")
     textl.write(str(label))
     textl.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
