@@ -177,7 +177,7 @@ if __name__ == "__main__":
                 operateCodeListS = operateCodeList(data)  # 提取操作码指令
                 for list in operateCodeListS:
                     for i in list:
-                        if i.__contains__('ORIGIN'):
+                        if i.__contains__('ORIGIN') and i.__contains__('EQ') and i.__contains__('ISZERO'):
                             opFe.append(list)
                 if len(opFe) < 20:
                     for i in opFe[0]:
