@@ -172,7 +172,7 @@ if __name__ == "__main__":
                 operateCodeListS = operateCodeList(data)  # 提取操作码指令
                 for list in operateCodeListS:
                     for i in list:
-                        if i.__contains__('TIMESTAMP'):
+                        if i.__contains__('TIMESTAMP') and i.__contains__('SSTORE') and i.__contains__('ISZERO'):
                             opFe.append(list)
                 if len(opFe):
                     listLast = []
